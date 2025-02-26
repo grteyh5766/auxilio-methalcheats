@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #121212;
+            font-family: 'Roboto', sans-serif;
+            color: #e0e0e0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Adicionando o fundo de espaço */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://cdn.pixabay.com/photo/2016/04/01/10/28/space-1303211_960_720.jpg') no-repeat center center fixed;
+            background-size: cover;
+            z-index: -1;
+            animation: starsAnimation 2s infinite;
+        }
+
+        /* Animação das estrelas piscando */
+        @keyframes starsAnimation {
+            0% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.3;
+            }
+        }
+
+        .login-container, .settings-container, .modal-container {
+            background: rgba(24, 24, 24, 0.9); /* Fundo semitransparente para que as estrelas sejam visíveis */
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 320px;
+            transition: all 0.3s;
+        }
+
+        .login-container img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            color: #7a7373;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.4s ease;
+            letter-spacing: 0.5px;
+        }
+
+        /* Removendo o foco azul */
+        .input-group input:focus {
+            outline: none; /* Remover a borda azul do foco */
+        }
+
+        /* Efeito de animação ao digitar */
+        .input-group input::placeholder {
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .input-group input:focus::placeholder {
+            opacity: 0; /* Faz o placeholder desaparecer enquanto digita */
+        }
+
+        .login-btn, .modal-btn, .apply-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            color: #fff;
+            background: #7289da;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .login-btn:hover, .modal-btn:hover, .apply-btn:hover {
+            background-color: #5b6eae;
+            transform: scale(1.05);
+        }
+
+        .login-btn:active, .modal-btn:active, .apply-btn:active {
+            background-color: #4b5d79;
+        }
+
+        .apply-btn {
+            background-color: #28a745; /* Cor verde GitHub */
+        }
+
+        .apply-btn:hover {
+            background-color: #218838;
+        }
+
+        .settings-container {
+            display: none;
+        }
+
+        .modal-container {
+            display: none;
+        }
+
+        .checkbox-group {
+            margin-bottom: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .checkbox-group label {
+            color: #e0e0e0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-group input[type="checkbox"] + .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            background-color: #333;
+            border-radius: 4px;
+            border: 2px solid #444;
+            position: relative;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + .checkbox-custom {
+            background-color: #7289da;
+            border-color: #5b6eae;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + .checkbox-custom::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+        }
+
+        .select-group {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .select-group select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            color: #7a7373;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .invisible-space {
+            height: 15px; /* Espaço invisível reduzido para afastar o próximo controle */
+        }
+
+        .slider-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .slider-group label {
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+
+        .slider-group input[type="range"] {
+            width: 100%;
+            margin-top: 5px;
+            accent-color: #7289da;
+        }
+
+        .slider-value {
+            color: #e0e0e0;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .discord-btn {
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 1rem;
+            color: #fff;
+            background: #7289da;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .discord-btn:hover {
+            background-color: #5b6eae;
+            transform: scale(1.05);
+        }
+
+        .version-box {
+            margin-top: 15px; /* Ajustando o espaçamento entre o botão "Aplicar" e a versão */
+            padding: 10px;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+        }
+
+        /* Linha invisível para separação */
+        .divider {
+            margin: 20px 0; /* Espaçamento antes e depois da linha invisível */
+            border-top: 1px solid transparent; /* Linha invisível */
+        }
+
+        .info-text {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 20px;
+            line-height: 1.4;
+        }
+
+        .success-message {
+            font-size: 1rem;
+            color: #28a745;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        /* Mais espaçamento para o botão "Aplicar" */
+        .apply-btn-container {
+            margin-top: 25px; /* Ajustando a distância entre o botão e a versão */
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela de login -->
+    <div class="login-container" id="loginScreen">
+        <!-- Substituindo o título por uma imagem -->
+        <img src="logo.png" alt="Logo">
+        <div class="input-group">
+            <input type="text" id="keyInput" placeholder="Insira seu acesso privado." required>
+        </div>
+        <button class="login-btn" onclick="verifyKey()">Login</button>
+        <!-- Adicionando a informação sobre o auxílio -->
+        <p class="info-text">
+            O auxílio se conectará ao seu jogo por meio da conexão SSH e modificará alguns valores, te dando uma vantagem significativa.<br>
+            Sem risco de banimentos ou black-lists. Ative tudo no treinamento ou no lobby para melhor funcionamento.
+        </p>
+    </div>
+
+    <!-- Modal de confirmação de login bem-sucedido -->
+    <div class="modal-container" id="successModal">
+        <h2>Login bem-sucedido!</h2>
+        <p>Seu login foi realizado com sucesso. Clique em "Continuar" para acessar o auxílio.</p>
+        <button class="modal-btn" onclick="goToSettings()">Continuar</button>
+    </div>
+
+    <!-- Tela de configurações após login -->
+    <div class="settings-container" id="settingsScreen">
+        <h1>Methal Cheats</h1>
+        <div class="select-group">
+            <label for="platformSelect">Escolha a Plataforma:</label>
+            <select id="platformSelect">
+                <option value="iOS">iOS</option>
+                <option value="Android">Android</option>
+            </select>
+        </div>
+        
+        <!-- Controle invisível para adicionar espaço extra -->
+        <div class="invisible-space"></div>
+
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="noRecoil"><span class="checkbox-custom"></span> No Recoil</label>
+            <label><input type="checkbox" id="aimlock"><span class="checkbox-custom"></span> Aimlock</label>
+            <label><input type="checkbox" id="dduOptimizer"><span class="checkbox-custom"></span> Otimizador de DDU</label>
+        </div>
+        <div class="slider-group">
+            <label>Precisão do Auxílio</label>
+            <input type="range" id="precisionSlider" min="0" max="100" value="50" oninput="updateSliderValue()">
+            <div class="slider-value" id="sliderValue">50px</div>
+        </div>
+        
+        <button class="discord-btn" onclick="accessDiscord()">Acessar Discord</button>
+        <div class="divider"></div>
+        
+        <!-- Versão do Free Fire -->
+        <div class="version-box">Versão do Free Fire: 1.109.1</div>
+
+        <!-- Mais espaço antes do botão "Aplicar" -->
+        <div class="apply-btn-container">
+            <button class="apply-btn" onclick="saveSettings()">Aplicar</button>
+        </div>
+
+        <!-- Mensagem de sucesso ao salvar configurações -->
+        <div class="success-message" id="successMessage" style="display: none;">Configurações salvas com sucesso!</div>
+    </div>
+
+    <script>
+        // Lista de chaves válidas
+        let validKeys = [
+            "methalcheats-1dia-kMI9nUHe78hd", // Sua chave de exemplo
+            "key 2", // Segunda chave exemplo
+            "key 3", // Terceira chave exemplo
+            "key 4"  // Quarta chave exemplo
+        ];
+
+        function verifyKey() {
+            const keyInput = document.getElementById('keyInput').value;
+            const loginScreen = document.getElementById('loginScreen');
+            const successModal = document.getElementById('successModal');
+
+            if (validKeys.includes(keyInput)) {
+                loginScreen.style.display = 'none';
+                successModal.style.display = 'block';
+            } else {
+                alert('Chave inválida!');
+            }
+        }
+
+        function goToSettings() {
+            const successModal = document.getElementById('successModal');
+            const settingsScreen = document.getElementById('settingsScreen');
+            successModal.style.display = 'none';
+            settingsScreen.style.display = 'block';
+        }
+
+        function saveSettings() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        function updateSliderValue() {
+            const slider = document.getElementById('precisionSlider');
+            const sliderValue = document.getElementById('sliderValue');
+            sliderValue.textContent = `${slider.value}px`;
+        }
+
+        function accessDiscord() {
+            window.location.href = "https://discord.gg/nU2Rs6jZe5";
+        }
+    </script>
+</body>
+</html>
